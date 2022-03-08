@@ -1,2 +1,14 @@
 # XXHASH4Delphi
- XXHash Wrapper for Delphi
+XXHash Wrapper for Delphi
+prebuild XXHash 0.8.1 Static Linked Object file with AVX2 or SSE2 support for both X64 and X86 platform.
+Simple test program provided.
+ 
+xxHash is an Extremely fast Hash algorithm, running at RAM speed limits. It successfully completes the SMHasher test suite which evaluates collision, dispersion and randomness qualities of hash functions. Code is highly portable, and hashes are identical across all platforms (little / big endian).
+
+Check https://github.com/Cyan4973/xxHash for details.
+
+XXHash 0.8.1的静态链接库，支持所有平台，在非平台上直接链接系统提供的libxxhash.a静态库文件，如需特殊指令集优化请自行重新编译libxxhash.a文件。
+
+Windows平台下默认采用avx2指令集，如需兼容老电脑，可删除XXHASHLIB.pas文件中的第二行{$DEFINE AVX2}，即可选择链接SSE2指令集的目标文件。
+
+此算法惊人地快，适合作为MD5替代算法使用。
