@@ -2,10 +2,11 @@ unit XXHASH;
 
 interface
 uses Sysutils,Classes,xxhashlib
-{$IFDEF YWLIB} //If you also installed my YWLIB package
+{$IFDEF YWLIB}  //If you also installed my YWRTL package
+                //YWRTL package: https://github.com/YWtheGod/YWRTL
   ,fastinttostr //For a faster BinToHex
   ,BufferPool   //For a no lock buffer allocating
-{$ENDIF}  //use a system buildin implement instead will be just fine.
+{$ENDIF}        //use a system buildin implement instead will be just fine.
   ;
 type
   //XXH3 128bits
