@@ -254,7 +254,7 @@ begin
   {$IFDEF YWLIB}
   b := bufferpool128k.GetBuffer;
   {$ELSE}
-  Getmem(b,_BufSize);
+  Getmem(b,128*1024);
   {$ENDIF}
 end;
 
