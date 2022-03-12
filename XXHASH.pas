@@ -2,10 +2,10 @@ unit XXHASH;
 
 interface
 uses Sysutils,Classes,xxhashlib
-{$IFDEF YWLIB}  //If you also installed my YWRTL package
+{$IFDEF YWRTL}  //If you also installed my YWRTL package
                 //YWRTL package: https://github.com/YWtheGod/YWRTL
   ,fastinttostr //For a faster BinToHex
-  ,BufferPool   //For a no lock buffer allocating
+  ,YWTypes   //For a no lock buffer allocating
 {$ENDIF}        //use a system buildin implement instead will be just fine.
   ;
 type
@@ -221,7 +221,7 @@ uses Hash;
 
 function Hex128(const t : XXH128_hash_t):string; inline
 begin
-  {$IFDEF YWLIB}
+  {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH128_hash_t));
   {$ELSE}
   setlength(Result,sizeof(XXH128_hash_t)*2);
@@ -231,7 +231,7 @@ end;
 
 function Hex64(const t : XXH64_hash_t):string; inline
 begin
-  {$IFDEF YWLIB}
+  {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH64_hash_t));
   {$ELSE}
   setlength(Result,sizeof(XXH64_hash_t)*2);
@@ -241,7 +241,7 @@ end;
 
 function Hex32(const t : XXH32_hash_t):string; inline
 begin
-  {$IFDEF YWLIB}
+  {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH32_hash_t));
   {$ELSE}
   setlength(Result,sizeof(XXH32_hash_t)*2);
@@ -251,7 +251,7 @@ end;
 
 procedure GetBuffer(var b : PByte); inline;
 begin
-  {$IFDEF YWLIB}
+  {$IFDEF YWRTL}
   b := bufferpool128k.GetBuffer;
   {$ELSE}
   Getmem(b,128*1024);
