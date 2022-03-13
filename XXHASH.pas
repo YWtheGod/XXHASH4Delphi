@@ -217,7 +217,7 @@ type
   end;
 
 implementation
-uses Hash;
+//uses Hash;
 
 function Hex128(const t : XXH128_hash_t):string; inline
 begin
@@ -304,13 +304,13 @@ end;
 procedure THashXXH3.reset;
 begin
   if XXH3_128bits_reset(state)<>XXH_OK then
-    raise EHashException.Create('XXH3_128bits_reset Error!');
+    raise Exception.Create('XXH3_128bits_reset Error!');
 end;
 
 procedure THashXXH3.SeedReset(Seed: UInt64);
 begin
   if XXH3_128bits_reset_withSeed(state,Seed)<>XXH_OK then
-    raise EHashException.Create('XXH3_128bits_reset Error!');
+    raise Exception.Create('XXH3_128bits_reset Error!');
 end;
 
 procedure THashXXH3.Update(const Input: string; const Encoding: TEncoding);
@@ -321,7 +321,7 @@ end;
 procedure THashXXH3.Update(const AData: PByte; ALength: NativeInt);
 begin
    if XXH3_128bits_update(state,AData,ALength)<>XXH_OK then
-     raise EHashException.Create('XXH3_128bits_update ERROR!');
+     raise Exception.Create('XXH3_128bits_update ERROR!');
 end;
 
 procedure THashXXH3.Update(const AData; const ALength: NativeInt);
@@ -578,13 +578,13 @@ end;
 procedure THashXXH64.reset;
 begin
   if XXH64_reset(state,0)<>XXH_OK then
-    raise EHashException.Create('XXH64_reset Error!');
+    raise Exception.Create('XXH64_reset Error!');
 end;
 
 procedure THashXXH64.SeedReset(Seed: UInt64);
 begin
   if XXH64_reset(state,Seed)<>XXH_OK then
-    raise EHashException.Create('XXH64_reset Error!');
+    raise Exception.Create('XXH64_reset Error!');
 end;
 
 procedure THashXXH64.Update(const Input: string; const Encoding: TEncoding);
@@ -595,7 +595,7 @@ end;
 procedure THashXXH64.Update(const AData: PByte; ALength: NativeInt);
 begin
    if XXH64_update(state,AData,ALength)<>XXH_OK then
-     raise EHashException.Create('XXH64_update ERROR!');
+     raise Exception.Create('XXH64_update ERROR!');
 end;
 
 procedure THashXXH64.Update(const AData; const ALength: NativeInt);
@@ -786,13 +786,13 @@ end;
 procedure THashXXH32.reset;
 begin
   if XXH32_reset(state,0)<>XXH_OK then
-    raise EHashException.Create('XXH32_reset Error!');
+    raise Exception.Create('XXH32_reset Error!');
 end;
 
 procedure THashXXH32.SeedReset(Seed: Cardinal);
 begin
   if XXH32_reset(state,Seed)<>XXH_OK then
-    raise EHashException.Create('XXH32_reset Error!');
+    raise Exception.Create('XXH32_reset Error!');
 end;
 
 procedure THashXXH32.Update(const Input: string; const Encoding: TEncoding);
@@ -803,7 +803,7 @@ end;
 procedure THashXXH32.Update(const AData: PByte; ALength: NativeInt);
 begin
    if XXH32_update(state,AData,ALength)<>XXH_OK then
-     raise EHashException.Create('XXH32_update ERROR!');
+     raise Exception.Create('XXH32_update ERROR!');
 end;
 
 procedure THashXXH32.Update(const AData; const ALength: NativeInt);
