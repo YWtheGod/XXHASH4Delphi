@@ -4,7 +4,7 @@ interface
 uses Sysutils,Classes,xxhashlib
 {$IFDEF YWRTL}  //If you also installed my YWRTL package
                 //YWRTL package: https://github.com/YWtheGod/YWRTL
-  ,fastinttostr //For a faster BinToHex
+  ,YWSTRUTIL //For a faster BinToHex
   ,YWTypes   //For a no lock buffer allocating
 {$ENDIF}        //use a system buildin implement instead will be just fine.
   ;
@@ -13,213 +13,239 @@ type
   THashXXH3 = record
   private
     state : XXH3_state_t;
-    procedure Update(const AData: PByte; ALength: NativeInt); overload; inline;
+    procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
-    class function Create: THashXXH3; static; inline;
-    class function SeedCreate(Seed:UInt64):THashXXH3; static; inline;
-    procedure reset; inline;
-    procedure SeedReset(Seed :UInt64); inline;
-    procedure Update(const AData; const ALength: NativeInt); overload; inline;
+    class function Create: THashXXH3; static;
+    class function SeedCreate(Seed:UInt64):THashXXH3; static;
+    procedure reset;
+    procedure SeedReset(Seed :UInt64);
+    procedure Update(const AData; const ALength: NativeInt); overload;
     procedure Update(const AData: TBytes; const ALength: NativeInt = 0);
-      overload; inline;
-    procedure Update(const Input: string); overload; inline;
+      overload;
+    procedure Update(const Input: string); overload;
     procedure Update(const Input: string; const Encoding : TEncoding); overload;
-      inline;
-    procedure Update(const st: TStream; var size: NativeInt); overload; inline;
-    function HashAsBytes : TBytes; overload; inline;
-    function HashAsString: string; overload; inline;
-    function HashAsUUID : TGuid; overload; inline;
+
+    procedure Update(const st: TStream; var size: NativeInt); overload;
+    function HashAsBytes : TBytes; overload;
+    function HashAsString: string; overload;
+    function HashAsUUID : TGuid; overload;
     class function HashAsUUID(const B:Pointer; const L : NativeInt) : TGuid;
-      overload; inline; static;
-    class function HashAsUUID(const Input : string):TGuid; overload; inline;
+      overload;  static;
+    class function HashAsUUID(const Input : string):TGuid; overload;
       static;
     class function HashAsUUID(const Input : string; const Encoding : TEncoding):
-      TGuid; overload; inline; static;
+      TGuid; overload;  static;
     class function HashAsUUID(const AData: TBytes; const ALen: NativeInt = 0):
-      TGuid; overload; inline; static;
+      TGuid; overload;  static;
     class function HashAsUUID(const st : TStream; var size : NativeInt):TGuid;
-      overload; inline; static;
+      overload;  static;
+    class function HashAsUUID(const st : TStream):TGuid;
+      overload;  static;
     class function HashAsBytes(const B:Pointer; const L : NativeInt) : TBytes;
-      overload; inline; static;
+      overload;  static;
     class function HashAsBytes(const AData: TBytes; const ALen: NativeInt = 0):
-      TBytes; overload; inline; static;
-    class function HashAsBytes(const Input: string):TBytes; overload; inline;
+      TBytes; overload;  static;
+    class function HashAsBytes(const Input: string):TBytes; overload;
       static;
     class function HashAsBytes(const Input: string; const Encoding: TEncoding):
-      TBytes; overload; inline; static;
+      TBytes; overload;  static;
     class function HashAsBytes(const st : TStream; var size : NativeInt):TBytes;
-      overload; inline; static;
+      overload;  static;
+    class function HashAsBytes(const st : TStream):TBytes;
+      overload;  static;
     class function HashAsString(const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function HashAsString(const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function HashAsString(const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function HashAsString(const Input: string):string; overload;
       static;
     class function HashAsString(const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function HashAsString(const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
+      overload;  static;
+    class function HashAsString(const st: TStream):string;
+      overload;  static;
 
     class function SeedHashAsUUID(const Seed:UInt64; const B:Pointer; const L : NativeInt) : TGuid;
-      overload; inline; static;
-    class function SeedHashAsUUID(const Seed:UInt64; const Input : string):TGuid; overload; inline;
+      overload;  static;
+    class function SeedHashAsUUID(const Seed:UInt64; const Input : string):TGuid; overload;
       static;
     class function SeedHashAsUUID(const Seed:UInt64; const Input : string; const Encoding : TEncoding):
-      TGuid; overload; inline; static;
+      TGuid; overload;  static;
     class function SeedHashAsUUID(const Seed:UInt64; const AData: TBytes; const ALen: NativeInt = 0):
-      TGuid; overload; inline; static;
+      TGuid; overload;  static;
     class function SeedHashAsUUID(const Seed:UInt64; const st : TStream; var size : NativeInt):TGuid;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHashAsUUID(const Seed:UInt64; const st : TStream):TGuid;
+      overload;  static;
     class function SeedHashAsBytes(const Seed:UInt64; const B:Pointer; const L : NativeInt) : TBytes;
-      overload; inline; static;
+      overload;  static;
     class function SeedHashAsBytes(const Seed:UInt64; const AData: TBytes; const ALen: NativeInt = 0):
-      TBytes; overload; inline; static;
-    class function SeedHashAsBytes(const Seed:UInt64; const Input: string):TBytes; overload; inline;
+      TBytes; overload;  static;
+    class function SeedHashAsBytes(const Seed:UInt64; const Input: string):TBytes; overload;
       static;
     class function SeedHashAsBytes(const Seed:UInt64; const Input: string; const Encoding: TEncoding):
-      TBytes; overload; inline; static;
+      TBytes; overload;  static;
     class function SeedHashAsBytes(const Seed:UInt64; const st : TStream; var size : NativeInt):TBytes;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHashAsBytes(const Seed:UInt64; const st : TStream):TBytes;
+      overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function SeedHashAsString(const Seed:UInt64; const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function SeedHashAsString(const Seed:UInt64; const Input: string):string; overload;
       static;
     class function SeedHashAsString(const Seed:UInt64; const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHashAsString(const Seed:UInt64; const st: TStream):string;
+      overload;  static;
   end;
 
   //XXH64
   THashXXH64 = record
   private
     state : XXH64_state_t;
-    procedure Update(const AData: PByte; ALength: NativeInt); overload; inline;
+    procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
-    class function Create: THashXXH64; static; inline;
-    class function SeedCreate(Seed:UInt64):THashXXH64; static; inline;
-    procedure reset; inline;
-    procedure SeedReset(Seed :UInt64); inline;
-    procedure Update(const AData; const ALength: NativeInt); overload; inline;
+    class function Create: THashXXH64; static;
+    class function SeedCreate(Seed:UInt64):THashXXH64; static;
+    procedure reset;
+    procedure SeedReset(Seed :UInt64);
+    procedure Update(const AData; const ALength: NativeInt); overload;
     procedure Update(const AData: TBytes; const ALength: NativeInt = 0);
-      overload; inline;
-    procedure Update(const Input: string); overload; inline;
+      overload;
+    procedure Update(const Input: string); overload;
     procedure Update(const Input: string; const Encoding : TEncoding); overload;
-      inline;
-    procedure Update(const st: TStream; var size: NativeInt); overload; inline;
-    function HashAsString: string; overload; inline;
-    function Hash : UInt64; overload; inline;
+
+    procedure Update(const st: TStream; var size: NativeInt); overload;
+    function HashAsString: string; overload;
+    function Hash : UInt64; overload;
     class function Hash(const B:Pointer; const L : NativeInt) : UInt64;
-      overload; inline; static;
-    class function Hash(const Input : string):UInt64; overload; inline;
+      overload;  static;
+    class function Hash(const Input : string):UInt64; overload;
       static;
     class function Hash(const Input : string; const Encoding : TEncoding):
-      UInt64; overload; inline; static;
+      UInt64; overload;  static;
     class function Hash(const AData: TBytes; const ALen: NativeInt = 0):
-      UInt64; overload; inline; static;
+      UInt64; overload;  static;
     class function Hash(const st : TStream; var size : NativeInt):UInt64;
-      overload; inline; static;
+      overload;  static;
+    class function Hash(const st : TStream):UInt64;
+      overload;  static;
     class function HashAsString(const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function HashAsString(const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function HashAsString(const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function HashAsString(const Input: string):string; overload;
       static;
     class function HashAsString(const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function HashAsString(const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
-
+      overload;  static;
+    class function HashAsString(const st: TStream):string;
+      overload;  static;
     class function SeedHash(const Seed:UInt64; const B:Pointer; const L : NativeInt) : UInt64;
-      overload; inline; static;
-    class function SeedHash(const Seed:UInt64; const Input : string):UInt64; overload; inline;
+      overload;  static;
+    class function SeedHash(const Seed:UInt64; const Input : string):UInt64; overload;
       static;
     class function SeedHash(const Seed:UInt64; const Input : string; const Encoding : TEncoding):
-      UInt64; overload; inline; static;
+      UInt64; overload;  static;
     class function SeedHash(const Seed:UInt64; const AData: TBytes; const ALen: NativeInt = 0):
-      UInt64; overload; inline; static;
+      UInt64; overload;  static;
     class function SeedHash(const Seed:UInt64; const st : TStream; var size : NativeInt):UInt64;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHash(const Seed:UInt64; const st : TStream):UInt64;
+      overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function SeedHashAsString(const Seed:UInt64; const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function SeedHashAsString(const Seed:UInt64; const Input: string):string; overload;
       static;
     class function SeedHashAsString(const Seed:UInt64; const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function SeedHashAsString(const Seed:UInt64; const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHashAsString(const Seed:UInt64; const st: TStream):string;
+      overload;  static;
   end;
 
   //XXH32
   THashXXH32 = record
   private
     state : XXH32_state_t;
-    procedure Update(const AData: PByte; ALength: NativeInt); overload; inline;
+    procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
-    class function Create: THashXXH32; static; inline;
-    class function SeedCreate(Seed:Cardinal):THashXXH32; static; inline;
-    procedure reset; inline;
-    procedure SeedReset(Seed :Cardinal); inline;
-    procedure Update(const AData; const ALength: NativeInt); overload; inline;
+    class function Create: THashXXH32; static;
+    class function SeedCreate(Seed:Cardinal):THashXXH32; static;
+    procedure reset;
+    procedure SeedReset(Seed :Cardinal);
+    procedure Update(const AData; const ALength: NativeInt); overload;
     procedure Update(const AData: TBytes; const ALength: NativeInt = 0);
-      overload; inline;
-    procedure Update(const Input: string); overload; inline;
+      overload;
+    procedure Update(const Input: string); overload;
     procedure Update(const Input: string; const Encoding : TEncoding); overload;
-      inline;
-    procedure Update(const st: TStream; var size: NativeInt); overload; inline;
-    function HashAsString: string; overload; inline;
-    function Hash : Cardinal; overload; inline;
+
+    procedure Update(const st: TStream; var size: NativeInt); overload;
+    function HashAsString: string; overload;
+    function Hash : Cardinal; overload;
     class function Hash(const B:Pointer; const L : NativeInt) : Cardinal;
-      overload; inline; static;
-    class function Hash(const Input : string):Cardinal; overload; inline;
+      overload;  static;
+    class function Hash(const Input : string):Cardinal; overload;
       static;
     class function Hash(const Input : string; const Encoding : TEncoding):
-      Cardinal; overload; inline; static;
+      Cardinal; overload;  static;
     class function Hash(const AData: TBytes; const ALen: NativeInt = 0):
-      Cardinal; overload; inline; static;
+      Cardinal; overload;  static;
     class function Hash(const st : TStream; var size : NativeInt):Cardinal;
-      overload; inline; static;
+      overload;  static;
+    class function Hash(const st : TStream):Cardinal;
+      overload;  static;
     class function HashAsString(const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function HashAsString(const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function HashAsString(const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function HashAsString(const Input: string):string; overload;
       static;
     class function HashAsString(const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function HashAsString(const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
-
+      overload;  static;
+    class function HashAsString(const st: TStream):string;
+      overload;  static;
     class function SeedHash(const Seed:Cardinal; const B:Pointer; const L : NativeInt) : Cardinal;
-      overload; inline; static;
-    class function SeedHash(const Seed:Cardinal; const Input : string):Cardinal; overload; inline;
+      overload;  static;
+    class function SeedHash(const Seed:Cardinal; const Input : string):Cardinal; overload;
       static;
     class function SeedHash(const Seed:Cardinal; const Input : string; const Encoding : TEncoding):
-      Cardinal; overload; inline; static;
+      Cardinal; overload;  static;
     class function SeedHash(const Seed:Cardinal; const AData: TBytes; const ALen: NativeInt = 0):
-      Cardinal; overload; inline; static;
+      Cardinal; overload;  static;
     class function SeedHash(const Seed:Cardinal; const st : TStream; var size : NativeInt):Cardinal;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHash(const Seed:Cardinal; const st : TStream):Cardinal;
+      overload;  static;
     class function SeedHashAsString(const Seed:Cardinal; const B: Pointer; const L : NativeInt): string;
-      overload; inline; static;
+      overload;  static;
     class function SeedHashAsString(const Seed:Cardinal; const AData: TBytes; const ALen: NativeInt = 0):
-      string; overload; inline; static;
-    class function SeedHashAsString(const Seed:Cardinal; const Input: string):string; overload; inline;
+      string; overload;  static;
+    class function SeedHashAsString(const Seed:Cardinal; const Input: string):string; overload;
       static;
     class function SeedHashAsString(const Seed:Cardinal; const Input: string; const Encoding: TEncoding):
-      string; overload; inline; static;
+      string; overload;  static;
     class function SeedHashAsString(const Seed:Cardinal; const st: TStream; var size: NativeInt):string;
-      overload; inline; static;
+      overload;  static;
+    class function SeedHashAsString(const Seed:Cardinal; const st: TStream):string;
+      overload;  static;
   end;
 
 implementation
 //uses Hash;
 
-function Hex128(const t : XXH128_hash_t):string; inline
+function Hex128(const t : XXH128_hash_t):string;
 begin
   {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH128_hash_t));
@@ -229,7 +255,7 @@ begin
   {$ENDIF}
 end;
 
-function Hex64(const t : XXH64_hash_t):string; inline
+function Hex64(const t : XXH64_hash_t):string;
 begin
   {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH64_hash_t));
@@ -239,7 +265,7 @@ begin
   {$ENDIF}
 end;
 
-function Hex32(const t : XXH32_hash_t):string; inline
+function Hex32(const t : XXH32_hash_t):string;
 begin
   {$IFDEF YWRTL}
   Result := BinToHex2(@t,sizeof(XXH32_hash_t));
@@ -249,7 +275,7 @@ begin
   {$ENDIF}
 end;
 
-procedure GetBuffer(var b : PByte); inline;
+procedure GetBuffer(var b : PByte);
 begin
   {$IFDEF YWRTL}
   b := bufferpool128k.GetBuffer;
@@ -258,7 +284,7 @@ begin
   {$ENDIF}
 end;
 
-procedure FreeBuffer(var b : PByte); inline;
+procedure FreeBuffer(var b : PByte);
 begin
   {$IFDEF YWLIB}
   bufferpool128k.FreeBuffer(b);
@@ -267,7 +293,7 @@ begin
   {$ENDIF}
 end;
 
-function TrueLen(const AData: TBytes; const ALength:NativeInt):NativeInt;inline;
+function TrueLen(const AData: TBytes; const ALength:NativeInt):NativeInt;
 begin
   Result := Length(AData);
   if (ALength>0)and(ALength<Result) then Result := ALength;
@@ -969,6 +995,111 @@ begin
   X.SeedReset(Seed);
   X.Update(st,size);
   Result := X.HashAsString;
+end;
+
+class function THashXXH3.HashAsBytes(const st: TStream): TBytes;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := HashAsBytes(st,s);
+end;
+
+class function THashXXH3.HashAsString(const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := HashAsString(st,s);
+end;
+
+class function THashXXH3.HashAsUUID(const st: TStream): TGuid;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := HashAsUUID(st,s);
+end;
+
+class function THashXXH3.SeedHashAsBytes(const Seed: UInt64;
+  const st: TStream): TBytes;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHashAsBytes(Seed,st,s);
+end;
+
+class function THashXXH3.SeedHashAsString(const Seed: UInt64;
+  const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHashAsString(Seed,st,s);
+end;
+
+class function THashXXH3.SeedHashAsUUID(const Seed: UInt64;
+  const st: TStream): TGuid;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHashAsUUID(Seed,st,s);
+end;
+
+class function THashXXH64.Hash(const st: TStream): UInt64;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := Hash(st,s);
+end;
+
+class function THashXXH64.HashAsString(const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := HashAsString(st,s);
+end;
+
+class function THashXXH64.SeedHash(const Seed: UInt64;
+  const st: TStream): UInt64;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHash(Seed,st,s);
+end;
+
+class function THashXXH64.SeedHashAsString(const Seed: UInt64;
+  const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHashAsString(Seed,st,s);
+end;
+
+class function THashXXH32.Hash(const st: TStream): Cardinal;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := Hash(st,s);
+end;
+
+class function THashXXH32.HashAsString(const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := HashAsString(st,s);
+end;
+
+class function THashXXH32.SeedHash(const Seed: Cardinal;
+  const st: TStream): Cardinal;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHash(Seed,st,s);
+end;
+
+class function THashXXH32.SeedHashAsString(const Seed: Cardinal;
+  const st: TStream): string;
+var s : NativeInt;
+begin
+  s := 0;
+  Result := SeedHashAsString(Seed,st,s);
 end;
 
 end.
