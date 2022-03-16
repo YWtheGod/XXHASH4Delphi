@@ -3,13 +3,7 @@
         <ProjectGuid>{CCB647AF-A713-4A4B-86C2-2827BECBD729}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="xxhash081_YWLIB.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="xxhash081.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="TEST\TestXXHash.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -20,15 +14,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="xxhash081_YWLIB">
-        <MSBuild Projects="xxhash081_YWLIB.dproj"/>
-    </Target>
-    <Target Name="xxhash081_YWLIB:Clean">
-        <MSBuild Projects="xxhash081_YWLIB.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="xxhash081_YWLIB:Make">
-        <MSBuild Projects="xxhash081_YWLIB.dproj" Targets="Make"/>
-    </Target>
     <Target Name="xxhash081">
         <MSBuild Projects="xxhash081.dproj"/>
     </Target>
@@ -38,23 +23,14 @@
     <Target Name="xxhash081:Make">
         <MSBuild Projects="xxhash081.dproj" Targets="Make"/>
     </Target>
-    <Target Name="TestXXHash">
-        <MSBuild Projects="TEST\TestXXHash.dproj"/>
-    </Target>
-    <Target Name="TestXXHash:Clean">
-        <MSBuild Projects="TEST\TestXXHash.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="TestXXHash:Make">
-        <MSBuild Projects="TEST\TestXXHash.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="xxhash081_YWLIB;xxhash081;TestXXHash"/>
+        <CallTarget Targets="xxhash081"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="xxhash081_YWLIB:Clean;xxhash081:Clean;TestXXHash:Clean"/>
+        <CallTarget Targets="xxhash081:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="xxhash081_YWLIB:Make;xxhash081:Make;TestXXHash:Make"/>
+        <CallTarget Targets="xxhash081:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
