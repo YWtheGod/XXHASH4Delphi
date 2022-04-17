@@ -10,11 +10,15 @@ uses Sysutils,Classes,xxhashlib
   ;
 type
   //XXH3 128bits
+  {$ALIGN 16}
   THashXXH3 = record
   private
     state : XXH3_state_t;
+    reserve : array[0..31] of byte;
+    function _state:PXXH3_state_t; inline;
     procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
+    class operator Assign (var Dest: THashXXH3; const [ref] Src: THashXXH3);
     class function Create: THashXXH3; static;
     class function SeedCreate(Seed:UInt64):THashXXH3; static;
     procedure reset;
@@ -108,8 +112,11 @@ type
   THashXXH64 = record
   private
     state : XXH64_state_t;
+    reserve : array[0..31] of byte;
+    function _state:PXXH64_state_t; inline;
     procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
+    class operator Assign (var Dest: THashXXH64; const [ref] Src: THashXXH64);
     class function Create: THashXXH64; static;
     class function SeedCreate(Seed:UInt64):THashXXH64; static;
     procedure reset;
@@ -177,8 +184,11 @@ type
   THashXXH32 = record
   private
     state : XXH32_state_t;
+    reserve : array[0..31] of byte;
+    function _state:PXXH32_state_t; inline;
     procedure Update(const AData: PByte; ALength: NativeInt); overload;
   public
+    class operator Assign (var Dest: THashXXH32; const [ref] Src: THashXXH32);
     class function Create: THashXXH32; static;
     class function SeedCreate(Seed:Cardinal):THashXXH32; static;
     procedure reset;
@@ -243,6 +253,11 @@ type
   end;
 
 implementation
+{$IFDEF MSWINDOWS}
+uses libc;
+{$ELSE}
+uses Posix.String_;
+{$ENDIF}
 //uses Hash;
 
 function Hex128(const t : XXH128_hash_t):string;
@@ -301,6 +316,15 @@ end;
 
 { THashXXH3 }
 
+class operator THashXXH3.Assign(var Dest: THashXXH3; [ref]const Src: THashXXH3);
+begin
+{$IFDEF MSWINDOWS}
+  memmove(Dest._state,Src._state,SizeOf(XXH3_state_t));
+{$ELSE}
+  memmove(Dest._state^,Src._state^,SizeOf(XXH3_state_t));
+{$ENDIF}
+end;
+
 class function THashXXH3.Create: THashXXH3;
 begin
   Result.reset;
@@ -314,28 +338,28 @@ end;
 function THashXXH3.HashAsBytes: TBytes;
 begin
   SetLength(Result,sizeof(XXH128_hash_t));
-  PXXH128_hash_t(Result)^ := XXH3_128bits_digest(state);
+  PXXH128_hash_t(Result)^ := XXH3_128bits_digest(_state^);
 end;
 
 function THashXXH3.HashAsUUID: TGuid;
 begin
-  XXH128_hash_t(Result) := XXH3_128bits_digest(state);
+  XXH128_hash_t(Result) := XXH3_128bits_digest(_state^);
 end;
 
 function THashXXH3.HashAsString: string;
 begin
-  Result := Hex128(XXH3_128bits_digest(state));
+  Result := Hex128(XXH3_128bits_digest(_state^));
 end;
 
 procedure THashXXH3.reset;
 begin
-  if XXH3_128bits_reset(state)<>XXH_OK then
+  if XXH3_128bits_reset(_state^)<>XXH_OK then
     raise Exception.Create('XXH3_128bits_reset Error!');
 end;
 
 procedure THashXXH3.SeedReset(Seed: UInt64);
 begin
-  if XXH3_128bits_reset_withSeed(state,Seed)<>XXH_OK then
+  if XXH3_128bits_reset_withSeed(_state^,Seed)<>XXH_OK then
     raise Exception.Create('XXH3_128bits_reset Error!');
 end;
 
@@ -346,7 +370,7 @@ end;
 
 procedure THashXXH3.Update(const AData: PByte; ALength: NativeInt);
 begin
-   if XXH3_128bits_update(state,AData,ALength)<>XXH_OK then
+   if XXH3_128bits_update(_state^,AData,ALength)<>XXH_OK then
      raise Exception.Create('XXH3_128bits_update ERROR!');
 end;
 
@@ -374,6 +398,11 @@ begin
     size := t;
     FreeBuffer(b);
   end;
+end;
+
+function THashXXH3._state: PXXH3_state_t;
+begin
+  Result := PXXH3_state_t((NativeInt(@self)+31) and NativeInt(-32));
 end;
 
 procedure THashXXH3.Update(const AData: TBytes; const ALength: NativeInt);
@@ -581,6 +610,15 @@ begin
   Result := X.HashAsString;
 end;
 
+class operator THashXXH64.Assign(var Dest: THashXXH64; [ref]const Src: THashXXH64);
+begin
+{$IFDEF MSWINDOWS}
+  memmove(Dest._state,Src._state,SizeOf(XXH64_state_t));
+{$ELSE}
+  memmove(Dest._state^,Src._state^,SizeOf(XXH64_state_t));
+{$ENDIF}
+end;
+
 class function THashXXH64.Create: THashXXH64;
 begin
   Result.reset;
@@ -593,23 +631,23 @@ end;
 
 function THashXXH64.Hash: UInt64;
 begin
-  XXH64_hash_t(Result) := XXH64_digest(state);
+  XXH64_hash_t(Result) := XXH64_digest(_state^);
 end;
 
 function THashXXH64.HashAsString: string;
 begin
-  Result := Hex64(XXH64_digest(state));
+  Result := Hex64(XXH64_digest(_state^));
 end;
 
 procedure THashXXH64.reset;
 begin
-  if XXH64_reset(state,0)<>XXH_OK then
+  if XXH64_reset(_state^,0)<>XXH_OK then
     raise Exception.Create('XXH64_reset Error!');
 end;
 
 procedure THashXXH64.SeedReset(Seed: UInt64);
 begin
-  if XXH64_reset(state,Seed)<>XXH_OK then
+  if XXH64_reset(_state^,Seed)<>XXH_OK then
     raise Exception.Create('XXH64_reset Error!');
 end;
 
@@ -620,7 +658,7 @@ end;
 
 procedure THashXXH64.Update(const AData: PByte; ALength: NativeInt);
 begin
-   if XXH64_update(state,AData,ALength)<>XXH_OK then
+   if XXH64_update(_state^,AData,ALength)<>XXH_OK then
      raise Exception.Create('XXH64_update ERROR!');
 end;
 
@@ -648,6 +686,11 @@ begin
     size := t;
     FreeBuffer(b);
   end;
+end;
+
+function THashXXH64._state: PXXH64_state_t;
+begin
+  Result := PXXH64_state_t((NativeInt(@self)+31)and NativeInt(-32));
 end;
 
 procedure THashXXH64.Update(const AData: TBytes; const ALength: NativeInt);
@@ -789,6 +832,15 @@ begin
   Result := X.HashAsString;
 end;
 
+class operator THashXXH32.Assign(var Dest: THashXXH32; [ref]const Src: THashXXH32);
+begin
+{$IFDEF MSWINDOWS}
+  memmove(Dest._state,Src._state,sizeof(XXH32_state_t));
+{$ELSE}
+  memmove(Dest._state^,Src._state^,sizeof(XXH32_state_t));
+{$ENDIF}
+end;
+
 class function THashXXH32.Create: THashXXH32;
 begin
   Result.reset;
@@ -801,23 +853,23 @@ end;
 
 function THashXXH32.Hash: Cardinal;
 begin
-  XXH32_hash_t(Result) := XXH32_digest(state);
+  XXH32_hash_t(Result) := XXH32_digest(_state^);
 end;
 
 function THashXXH32.HashAsString: string;
 begin
-  Result := Hex32(XXH32_digest(state));
+  Result := Hex32(XXH32_digest(_state^));
 end;
 
 procedure THashXXH32.reset;
 begin
-  if XXH32_reset(state,0)<>XXH_OK then
+  if XXH32_reset(_state^,0)<>XXH_OK then
     raise Exception.Create('XXH32_reset Error!');
 end;
 
 procedure THashXXH32.SeedReset(Seed: Cardinal);
 begin
-  if XXH32_reset(state,Seed)<>XXH_OK then
+  if XXH32_reset(_state^,Seed)<>XXH_OK then
     raise Exception.Create('XXH32_reset Error!');
 end;
 
@@ -828,7 +880,7 @@ end;
 
 procedure THashXXH32.Update(const AData: PByte; ALength: NativeInt);
 begin
-   if XXH32_update(state,AData,ALength)<>XXH_OK then
+   if XXH32_update(_state^,AData,ALength)<>XXH_OK then
      raise Exception.Create('XXH32_update ERROR!');
 end;
 
@@ -856,6 +908,11 @@ begin
     size := t;
     FreeBuffer(b);
   end;
+end;
+
+function THashXXH32._state: PXXH32_state_t;
+begin
+  Result :=PXXH32_state_t((NativeInt(@self)+31)and NativeInt(-32));
 end;
 
 procedure THashXXH32.Update(const AData: TBytes; const ALength: NativeInt);
